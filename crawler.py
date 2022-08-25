@@ -1,9 +1,8 @@
 from abc import abstractmethod, ABC
-from config import url, cities
-import requests
-from bs4 import BeautifulSoup
+from config import *
 import json
-
+from khayyam.jalali_date import JalaliDate
+from time import sleep
 
 
 class BaseCrawl(ABC):
@@ -18,36 +17,40 @@ class BaseCrawl(ABC):
 
 class PageCrawler(BaseCrawl):
 
-    def __init__(self, loc=cities, baseurl=url):
+    def __init__(self, loc=cities, baseurl=base_url):
         self.Loc = loc
         self.baseurl = baseurl
 
+    def finder(self, url):
+        ''''crawl = soup.find_all
+        ('span', attrs={'class': 'result-hood'})'''
 
+        soup = BeautifulSoup(link_generator(url), 'html.parser')
+        crawl = soup.find_all('a', attrs={'class': 'hdrlnk'})
+        return crawl
 
     def start(self):
-        List = None
         counter = 0
+        LINKS = list()
         for city in cities:
-            response = requests.get(url.format(City=city))
-            soup = BeautifulSoup(response.text, 'html.parser')
-            crawl = soup.find_all('span', attrs={'class': 'result-hood'})
-            for link in crawl:
-                counter+=1
-            print(f'{counter} Houses Crawled Outta {city}')
-            counter=0
-        return '__crawling_Done__'
-
-
-
-
-
-
-
+            for link in self.finder(base_url.format(City=city)):
+                counter += 1
+                LINKS.extend(link)
+            print(f'{counter} Houses/Apartments Crawled Outta {city} for rent')
+            counter = 0
+        return '__crawling__is__finished__'
 
     def store(self):
-        pass
-
-
+        print('Storing Please wait ....')
+        links = list()
+        sleep(3)
+        for city in cities:
+            base = self.finder(base_url.format(City=city))
+            with open(f'Storage/{str(JalaliDate.today())}.json', 'a+') as Jason:
+                for lnk in base:
+                    Jason.writelines(f"\n{lnk.get('href')}")
+                Jason.close()
+        return 'Storage Complete'
 
 class DataCrawler(BaseCrawl):
     def start(self):

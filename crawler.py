@@ -3,6 +3,7 @@ from config import *
 import json
 from khayyam.jalali_date import JalaliDate
 from time import sleep
+from parser import AdvParser
 
 
 class BaseCrawl(ABC):
@@ -38,7 +39,7 @@ class PageCrawler(BaseCrawl):
                 LINKS.extend(link)
             print(f'{counter} Houses/Apartments Crawled Outta {city} for rent')
             counter = 0
-        return '__crawling__is__finished__'
+        return 'crawling is finished'
 
     def store(self):
         print('Storing Please wait ....')
@@ -53,8 +54,26 @@ class PageCrawler(BaseCrawl):
         return 'Storage Complete'
 
 class DataCrawler(BaseCrawl):
+    def __init__(self):
+        self.links = self.getdata()
+        self.parser = AdvParser
+
+    @staticmethod
+    def getdata():
+        with open(f"Storage/{str(JalaliDate.today())}.json", 'r') as readlist:
+            data = json.loads(readlist.readline())
+        return data
+
+
     def start(self):
-        pass
+        for dta in self.links:
+            pure = link_generator(dta)
+            data = self.parser.parser(pure)
+            print(data)
+
+
 
     def store(self):
-        pass
+        def store(self, data):
+            with open('fixtures/data.json', 'w') as f:
+                f.write(json.dumps(data))

@@ -42,3 +42,5 @@ class AdvParser:
         create_tag = soup.find('time', attrs={'class': 'date timeago'})
         if create_tag:
             data['created_time'] = create_tag
+
+        return data

@@ -43,11 +43,10 @@ class PageCrawler(BaseCrawl):
 
     def store(self):
         print('Storing Please wait ....')
-        links = list()
         sleep(3)
         for city in cities:
             base = self.finder(base_url.format(City=city))
-            with open(f'Storage/{str(JalaliDate.today())}.json', 'a+') as Jason:
+            with open('Storage/data.json', 'a+') as Jason:
                 for lnk in base:
                     Jason.writelines(f"\n{lnk.get('href')}")
                 Jason.close()
@@ -56,21 +55,21 @@ class PageCrawler(BaseCrawl):
 class DataCrawler(BaseCrawl):
     def __init__(self):
         self.links = self.getdata()
-        self.parser = AdvParser
+        self.parser = AdvParser()
 
     @staticmethod
     def getdata():
-        with open(f"Storage/{str(JalaliDate.today())}.json", 'r') as readlist:
-            data = json.loads(readlist.readline())
-        return data
+        with open("Storage/data.json", "r") as readlist:
+            data = readlist.readlines()
+            return data
 
 
     def start(self):
-        for dta in self.links:
-            pure = link_generator(dta)
+        link = self.links
+        for i in range(len(link)):
+            pure = link_generator(link[i])
             data = self.parser.parser(pure)
             print(data)
-
 
 
     def store(self):

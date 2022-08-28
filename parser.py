@@ -23,13 +23,16 @@ class AdvParser:
         if housing_tag:
             data['housing'] = housing_tag.text
 
+
         price_tag = soup.find('span', attrs={'class': 'price'})
         if price_tag:
             data['price'] = price_tag.text
 
+
         small_tag = soup.find('small')
         if small_tag:
-            data['small_title'] = small_tag
+            data['small_title'] = small_tag.text
+
 
         body_tag = soup.select_one('#postingbody')
         if body_tag:
@@ -39,8 +42,12 @@ class AdvParser:
         if title_tag:
             data['title'] = title_tag.text
 
+        #id_tag = soup.find('font', attrs={'style', 'inherit'}) #Publish ID: 7526537308
+        #if id_tag:
+        #    data['post_id'] = id_tag.text
+
         create_tag = soup.find('time', attrs={'class': 'date timeago'})
         if create_tag:
-            data['created_time'] = create_tag
+            data['created_time'] = create_tag.text
 
         return data

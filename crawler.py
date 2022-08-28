@@ -73,6 +73,12 @@ class DataCrawler(BaseCrawl):
 
 
     def store(self):
-        def store(self, data):
-            with open('fixtures/data.json', 'w') as f:
-                f.write(json.dumps(data))
+        link = self.links
+        for i in range(len(link)):
+            pure = link_generator(link[i])
+            data = self.parser.parser(pure)
+            with open(f'Storage/{str(JalaliDate.today())}.json', 'a+') as Pure:
+                Pure.write(f"\n{data}")
+                Pure.close()
+        print("Well Done")
+

@@ -80,5 +80,5 @@ class DataCrawler(BaseCrawl):
             with open(f'Storage/{str(JalaliDate.today())}.json', 'a+') as Pure:
                 Pure.write(f"\n{data}")
                 Pure.close()
-        print("Well Done")
+        print("Crawled Data Are Saved Successfully")
 

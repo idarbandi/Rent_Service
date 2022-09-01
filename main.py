@@ -13,4 +13,4 @@ if __name__ == "__main__":
         #print(MeCrawler.start())
         #print(MeCrawler.store())
         Ucrawler = DataCrawler()
-        Ucrawler.store()
+        Ucrawler.start()

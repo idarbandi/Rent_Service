@@ -1,7 +1,7 @@
 from abc import abstractmethod, ABC
 from config import *
 import json
-from khayyam.jalali_date import JalaliDate
+from khayyam import jalali_datetime
 from time import sleep
 from parser import AdvParser
 
@@ -69,16 +69,14 @@ class DataCrawler(BaseCrawl):
         for i in range(len(link)):
             pure = link_generator(link[i])
             data = self.parser.parser(pure)
+            if protocols['data-store']:
+                self.store(data,str(jalali_datetime.datetime.now()))
             print(data)
+        return f'data crawled successfully at {jalali_datetime.JalaliDatetime.today()}'
 
 
-    def store(self):
-        link = self.links
-        for i in range(len(link)):
-            pure = link_generator(link[i])
-            data = self.parser.parser(pure)
-            with open(f'Storage/{str(JalaliDate.today())}.json', 'a+') as Pure:
-                Pure.write(f"\n{data}")
-                Pure.close()
-        print("Crawled Data Are Saved Successfully")
+    def store(self, data , filename):
+        pure = open(f'Storage/Data_Crawlage/{filename}.json', 'w')
+        pure.write(json.dumps(data))
+        pure.close()
 

@@ -7,6 +7,7 @@ cities = ['paris', 'brussels', 'brighton', 'liverpool', 'oxford', 'cambridge', '
 
 protocols = {
     'Link_Pick': True,
+    'data-store':True
 }
 
 def link_generator(kir):

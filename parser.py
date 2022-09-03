@@ -3,49 +3,65 @@ from bs4 import BeautifulSoup
 
 class AdvParser:
 
-    def parser(self, html_data):
-        soup = BeautifulSoup(html_data, 'html.parser')
-        data = dict(
-            title=None,
-            housing=None,
-            price=None,
-            small_title=None,
-            post_id=None,
-            created_time=None
-        )
+    def __init__(self):
+        self.soup = None
 
-        title_tag = soup.find('span', attrs={'id': 'titletextonly'})
+    @property
+    def title(self):
+        title_tag = self.soup.find('span', attrs={'id': 'titletextonly'})
         if title_tag:
-            data['title'] = title_tag.text
+            return title_tag.text
+        return None
 
-        housing_tag = soup.find('span', attrs={'class': 'housing'})
+    @property
+    def area(self):
+        housing_tag = self.soup.find('span', attrs={'class': 'housing'})
         if housing_tag:
-            data['housing'] = housing_tag.text.replace('/ ', '')
+            return housing_tag.text.replace('/ ', '')
+        return None
 
-
-        price_tag = soup.find('span', attrs={'class': 'price'})
+    @property
+    def price(self):
+        price_tag = self.soup.find('span', attrs={'class': 'price'})
         if price_tag:
-            data['price'] = price_tag.text
-
-
-        small_tag = soup.find('small')
+            return price_tag.text
+        return None
+    @property
+    def small_title(self):
+        small_tag = self.soup.find('small')
         if small_tag:
-            data['small_title'] = small_tag.text.replace(' ', '')
+             return small_tag.text.replace(' ', '')
+        return None
 
 
         # body_tag = soup.select_one('#postingbody')
         # if body_tag:
         #     data['body'] = body_tag.text.replace('\n\nQR Code Link to This Post\n\n\n', '')
 
-        selector1 ='body > section > section > section > div.postinginfos > p:nth-child(1)'
-        id_tag = soup.select_one(selector1)
+
+
+
+    @property
+    def post_id(self):
+        selector = 'body > section > section > section > div.postinginfos > p:nth-child(1)'
+        id_tag = self.soup.select_one(selector)
         if id_tag:
-            data['post_id'] = id_tag.text.replace('Id publi: ', '')
+            return id_tag.text.replace('Id publi: ', '')
+        return None
 
+    @property
+    def created_time(self):
+        time_selector = 'body > section > section > section > div.postinginfos > p:nth-child(2) > time'
+        time = self.soup.select_one(time_selector)
+        if time:
+            return time.attrs['datetime']
 
-        selector2 = 'body > section > section > section > div.postinginfos > p.postinginfo.reveal > time'
-        create_tag = soup.select_one(selector2)
-        if create_tag:
-            data['created_time'] = create_tag.text
-
+    def parser(self, html_data):
+        self.soup = BeautifulSoup(html_data, 'html.parser')
+        data = dict(
+            title=self.title, price=self.price, area=self.area,
+            allias=self.small_title, post_id=self.post_id,
+            created_time=self.created_time
+        )
         return data
+

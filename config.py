@@ -3,11 +3,12 @@ from bs4 import BeautifulSoup
 
 base_url = 'https://{City}.craigslist.org/search/apa?lang=en&cc=gb'
 
-cities = ['paris', 'brussels', 'brighton', 'liverpool', 'oxford', 'cambridge', 'manchester', 'belfast']
+cities = ['brussels', 'brighton', 'paris', 'liverpool', 'oxford', 'cambridge', 'manchester', 'belfast']
 
 protocols = {
     'Link_Pick': True,
-    'data-store':True
+    'data-store':True,
+    'storage_type': 'mongo' #either can be (mongo) or (file)
 }
 
 def link_generator(kir):

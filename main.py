@@ -6,11 +6,14 @@ import sys
 
 
 if __name__ == "__main__":
-    p = input('Press p To Continue .... ')
     p = sys.argv
-    if p == p:
-        #MeCrawler = PageCrawler()
-        #print(MeCrawler.start())
-        #print(MeCrawler.store())
+    p = input('Press "1" to initiate link Crawler'
+                  ' and press "2" to initiate data crawler .... ')
+
+    if p == '1':
+        Crawler = PageCrawler()
+        print(Crawler.start())
+        print(Crawler.store())
+    if p == '2':
         Ucrawler = DataCrawler()
         Ucrawler.start()

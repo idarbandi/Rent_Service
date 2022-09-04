@@ -4,6 +4,7 @@ import json
 from khayyam import jalali_datetime
 from time import sleep
 from parser import AdvParser
+from pymongo import MongoClient
 
 
 class BaseCrawl(ABC):
@@ -76,7 +77,13 @@ class DataCrawler(BaseCrawl):
 
 
     def store(self, data , filename):
-        pure = open(f'Storage/Data_Crawlage/{filename}.json', 'w')
-        pure.write(json.dumps(data))
-        pure.close()
+        if protocols['storage_type']=='file':
+            pure = open(f'Storage/Data_Crawlage/{filename}.json', 'w')
+            pure.write(json.dumps(data))
+            pure.close()
+        if protocols['storage_type']=='mongo':
+            Client = MongoClient()
+            db = Client['crawl_data']
+            collection = getattr(db, 'collection')
+            collection.insert_one(data)
 

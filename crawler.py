@@ -1,13 +1,25 @@
 from abc import abstractmethod, ABC
 from config import *
-import json
 from khayyam import jalali_datetime
 from time import sleep
 from parser import AdvParser
-from pymongo import MongoClient
+from storage import MongoStorage, FileStorage
 
 
 class BaseCrawl(ABC):
+
+    def __init__(self):
+        self.storage = self.__store_Engine()
+
+    @staticmethod
+    def __store_Engine():
+        if protocols['storage_type'] == 'file':
+            return FileStorage()
+        if protocols['storage_type'] == 'mongo':
+            return MongoStorage()
+        else:
+            print('wrong storage type chosen')
+
     @abstractmethod
     def start(self):
         pass
@@ -22,6 +34,7 @@ class PageCrawler(BaseCrawl):
     def __init__(self, loc=cities, baseurl=base_url):
         self.Loc = loc
         self.baseurl = baseurl
+        super().__init__()
 
     def finder(self, url):
         ''''crawl = soup.find_all
@@ -33,11 +46,11 @@ class PageCrawler(BaseCrawl):
 
     def start(self):
         counter = 0
-        LINKS = list()
+        links = list()
         for city in cities:
             for link in self.finder(base_url.format(City=city)):
                 counter += 1
-                LINKS.extend(link)
+                links.extend(link)
             print(f'{counter} Houses/Apartments Crawled Outta {city} for rent')
             counter = 0
         return 'crawling is finished'
@@ -53,10 +66,12 @@ class PageCrawler(BaseCrawl):
                 Jason.close()
         return 'Storage Complete'
 
+
 class DataCrawler(BaseCrawl):
     def __init__(self):
         self.links = self.getdata()
         self.parser = AdvParser()
+        super().__init__()
 
     @staticmethod
     def getdata():
@@ -64,26 +79,15 @@ class DataCrawler(BaseCrawl):
             data = readlist.readlines()
             return data
 
-
     def start(self):
         link = self.links
         for i in range(len(link)):
             pure = link_generator(link[i])
             data = self.parser.parser(pure)
             if protocols['data-store']:
-                self.store(data,str(jalali_datetime.datetime.now()))
-            print(data)
+                self.storage.store(data, str(jalali_datetime.datetime.now()))
+            print(i for i in range(len(data)))
         return f'data crawled successfully at {jalali_datetime.JalaliDatetime.today()}'
 
-
-    def store(self, data , filename):
-        if protocols['storage_type']=='file':
-            pure = open(f'Storage/Data_Crawlage/{filename}.json', 'w')
-            pure.write(json.dumps(data))
-            pure.close()
-        if protocols['storage_type']=='mongo':
-            Client = MongoClient()
-            db = Client['crawl_data']
-            collection = getattr(db, 'collection')
-            collection.insert_one(data)
-
+    def store(self):
+        pass

@@ -1,6 +1,7 @@
 from mongo import MongoDB
 from abc import ABC, abstractmethod
 import json
+from time import sleep
 
 
 class StorageBase(ABC):
@@ -22,7 +23,17 @@ class MongoStorage(StorageBase):
 
 class FileStorage(StorageBase):
 
+
+
     def store(self, data, filename, *args):
-        pure = open(f'Storage/Data_Crawlage/{filename}.json', 'w')
-        pure.write(json.dumps(data))
-        pure.close()
+        if filename == 'purelink':
+            print('Storing links Please wait ....')
+            with open('Storage/purelink.json', 'a+') as Jason:
+                Jason.writelines(data)
+                Jason.close()
+            print('Link Storage Complete')
+        else:
+            pure = open(f'Storage/Data_Crawlage/{filename}.json', 'w')
+            pure.write(json.dumps(data))
+            pure.close()
+

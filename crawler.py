@@ -1,7 +1,6 @@
 from abc import abstractmethod, ABC
 from config import *
 from khayyam import jalali_datetime
-from time import sleep
 from parser import AdvParser
 from storage import MongoStorage, FileStorage
 
@@ -48,24 +47,20 @@ class PageCrawler(BaseCrawl):
         counter = 0
         links = list()
         for city in cities:
-            for link in self.finder(base_url.format(City=city)):
-                counter += 1
-                links.extend(link)
+            for base in self.finder(base_url.format(City=city)):
+                if protocols['data-store']:
+                    data = f"\n url: {base.get('href')}"
+                    self.storage.store(data,'purelink')
+                else:
+                    counter += 1
+                    links.extend(base)
             print(f'{counter} Houses/Apartments Crawled Outta {city} for rent')
             counter = 0
-        return 'crawling is finished'
+        print('crawling is finished')
+        return "DONE"
 
     def store(self):
-        print('Storing Please wait ....')
-        sleep(3)
-        for city in cities:
-            base = self.finder(base_url.format(City=city))
-            with open('Storage/data.json', 'a+') as Jason:
-                for lnk in base:
-                    Jason.writelines(f"\n{lnk.get('href')}")
-                Jason.close()
-        return 'Storage Complete'
-
+        pass
 
 class DataCrawler(BaseCrawl):
     def __init__(self):

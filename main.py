@@ -13,7 +13,6 @@ if __name__ == "__main__":
     if p == '1':
         Crawler = PageCrawler()
         print(Crawler.start())
-        print(Crawler.store())
     if p == '2':
         Ucrawler = DataCrawler()
         Ucrawler.start()

@@ -16,9 +16,9 @@ class MongoStorage(StorageBase):
     def __init__(self):
         self.mongo = MongoDB()
 
-    def store(self, data, *args):
-        collection = getattr(self.mongo.db, 'collection')
-        collection.insert_one(data)
+    def store(self, data, collec, *args):
+        collection = getattr(self.mongo.db, collec)
+        collection.insert_many(data)
 
 
 class FileStorage(StorageBase):

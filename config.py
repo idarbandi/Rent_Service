@@ -7,16 +7,19 @@ cities = ['brussels', 'brighton', 'paris', 'liverpool', 'oxford', 'cambridge', '
 
 protocols = {
     'Link_Pick': True,
-    'data-store': False,
-    'storage_type': 'file' #either can be (mongo) or (file)
+    'data-store': True,
+    'storage_type': 'file',  # either can be (mongo) or (file)
+    'read_type': 'file',  # either can be (mongo) or (file)
+
 }
+
 
 def link_generator(kir):
     response = requests.get(kir)
     return response.text
 
 
-def linkpicker(func,kire):
+def linkpicker(func, kire):
     if protocols['Link_Pick']:
         soup = BeautifulSoup(link_generator(kire), 'html.parser')
         return soup.find_all('a', attrs={'class': 'hdrlnk'})

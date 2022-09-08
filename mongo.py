@@ -1,4 +1,5 @@
 from pymongo import MongoClient
+from khayyam import jalali_datetime
 
 
 class MongoDB:
@@ -13,3 +14,6 @@ class MongoDB:
     def __init__(self):
         self.client = MongoClient()
         self.db = self.client['crawler']
+
+    def __str__(self):
+        pass

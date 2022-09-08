@@ -3,12 +3,23 @@ from config import *
 from khayyam import jalali_datetime
 from parser import AdvParser
 from storage import MongoStorage, FileStorage
+from read import MongoRead, FileRead
 
 
 class BaseCrawl(ABC):
 
     def __init__(self):
         self.storage = self.__store_Engine()
+        self.read = self.__read_Engine()
+
+    @staticmethod
+    def __read_Engine():
+        if protocols['read_type'] == 'file':
+            return FileRead()
+        if protocols['read_type'] == 'mongo':
+            return MongoRead()
+        else:
+            print('wrong read Type')
 
     @staticmethod
     def __store_Engine():
@@ -23,9 +34,7 @@ class BaseCrawl(ABC):
     def start(self):
         pass
 
-    @abstractmethod
-    def store(self):
-        pass
+
 
 
 class PageCrawler(BaseCrawl):
@@ -49,30 +58,25 @@ class PageCrawler(BaseCrawl):
         for city in cities:
             for base in self.finder(base_url.format(City=city)):
                 if protocols['data-store']:
-                    data = f"\n url: {base.get('href')}"
-                    self.storage.store(data,'purelink')
-                else:
-                    counter += 1
-                    links.extend(base)
+                    if protocols['storage_type'] == 'mongo':
+                        self.storage.store([{"url": base.get('href')}], 'purelink')
+                    elif protocols['storage_type'] == 'file':
+                        self.storage.store(f"\n{base.get('href')}", 'purelink')
+                counter += 1
+                links.extend(base)
             print(f'{counter} Houses/Apartments Crawled Outta {city} for rent')
             counter = 0
         print('crawling is finished')
         return "DONE"
 
-    def store(self):
-        pass
 
 class DataCrawler(BaseCrawl):
     def __init__(self):
-        self.links = self.getdata()
-        self.parser = AdvParser()
         super().__init__()
+        self.links = self.read.read('purelink')
+        self.parser = AdvParser()
 
-    @staticmethod
-    def getdata():
-        with open("Storage/data.json", "r") as readlist:
-            data = readlist.readlines()
-            return data
+
 
     def start(self):
         link = self.links
@@ -83,6 +87,3 @@ class DataCrawler(BaseCrawl):
                 self.storage.store(data, str(jalali_datetime.datetime.now()))
             print(i for i in range(len(data)))
         return f'data crawled successfully at {jalali_datetime.JalaliDatetime.today()}'
-
-    def store(self):
-        pass

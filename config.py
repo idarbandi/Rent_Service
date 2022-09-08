@@ -8,8 +8,8 @@ cities = ['brussels', 'brighton', 'paris', 'liverpool', 'oxford', 'cambridge', '
 protocols = {
     'Link_Pick': True,
     'data-store': True,
-    'storage_type': 'file',  # either can be (mongo) or (file)
-    'read_type': 'file',  # either can be (mongo) or (file)
+    'storage_type': 'mongo',  # either can be (mongo) or (file)
+    'read_type': 'mongo',  # either can be (mongo) or (file)
 
 }
 

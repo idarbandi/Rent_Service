@@ -59,7 +59,7 @@ class PageCrawler(BaseCrawl):
             for base in self.finder(base_url.format(City=city)):
                 if protocols['data-store']:
                     if protocols['storage_type'] == 'mongo':
-                        self.storage.store([{"url": base.get('href')}], 'purelink')
+                        self.storage.store([{"url": base.get('href'), 'flag': False}], 'purelink')
                     elif protocols['storage_type'] == 'file':
                         self.storage.store(f"\n{base.get('href')}", 'purelink')
                 counter += 1
@@ -84,6 +84,6 @@ class DataCrawler(BaseCrawl):
             pure = link_generator(link[i])
             data = self.parser.parser(pure)
             if protocols['data-store']:
-                self.storage.store(data, str(jalali_datetime.datetime.now()))
+                self.storage.store(data, str(jalali_datetime.JalaliDatetime.today()))
             print(i for i in range(len(data)))
         return f'data crawled successfully at {jalali_datetime.JalaliDatetime.today()}'

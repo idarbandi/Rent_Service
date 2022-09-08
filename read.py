@@ -26,8 +26,10 @@ class MongoRead(ReadBase):
     def read(self, collection, *args):
         links = list()
         collect = self.mongo.db["purelink"]
-        for x in collect.find({}, {"_id": 0}):
+        for x in collect.find({'flag': False}):
             links.append(x["url"])
+            collect.update_one({'_id': x['_id']}, {'$set': {'flag': True}})
+        print('flags updated')
         return links
 
     def __str__(self):

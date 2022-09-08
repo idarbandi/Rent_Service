@@ -18,7 +18,13 @@ class MongoStorage(StorageBase):
 
     def store(self, data, collec, *args):
         collection = getattr(self.mongo.db, collec)
-        collection.insert_many(data)
+        if len(data) == 1:
+            collection.insert_many(data)
+        else:
+            collection.insert_one(data)
+
+
+
 
 
 class FileStorage(StorageBase):

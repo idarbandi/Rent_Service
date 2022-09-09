@@ -29,15 +29,14 @@ class ImageDownloader(BaseCrawl):
             for image in adv['images']:
                 response = self.get(image['url'])
                 if protocols['image_store']:
-                    self.disk(response , adv['post_id'], counter)
+                    self.disk(response, adv['post_id'], counter)
                 counter += 1
 
-    def disk(self, data, adv_id, NUM):
-        filename = f'{adv_id}{NUM}'
+    def disk(self, data, adv_id, num):
+        filename = f'{adv_id}{num}'
         f = open(f'Storage/images/{filename}.jpg', 'ab')
         f.write(data.content)
         for _ in data.iter_content():
             f.write(data.content)
         print(f" image {filename} saved")
         return filename
-

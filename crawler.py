@@ -1,6 +1,6 @@
 from abc import abstractmethod, ABC
 from config import *
-from khayyam import jalali_datetime
+from khayyam.jalali_datetime import JalaliDatetime
 from parser import AdvParser
 from storage import MongoStorage, FileStorage
 from read import MongoRead, FileRead
@@ -35,8 +35,6 @@ class BaseCrawl(ABC):
         pass
 
 
-
-
 class PageCrawler(BaseCrawl):
 
     def __init__(self, loc=cities, baseurl=base_url):
@@ -45,8 +43,8 @@ class PageCrawler(BaseCrawl):
         super().__init__()
 
     def finder(self, url):
-        ''''crawl = soup.find_all
-        ('span', attrs={'class': 'result-hood'})'''
+        """crawl = soup.find_all
+        ('span', attrs={'class': 'result-hood'})"""
 
         soup = BeautifulSoup(link_generator(url), 'html.parser')
         crawl = soup.find_all('a', attrs={'class': 'hdrlnk'})
@@ -76,14 +74,11 @@ class DataCrawler(BaseCrawl):
         self.links = self.read.read('purelink')
         self.parser = AdvParser()
 
-
-
     def start(self):
         link = self.links
         for i in range(len(link)):
             pure = link_generator(link[i])
             data = self.parser.parser(pure)
             if protocols['data-store']:
-                self.storage.store(data, str(jalali_datetime.JalaliDatetime.today()))
-            print(i for i in range(len(data)))
-        return f'data crawled successfully at {jalali_datetime.JalaliDatetime.today()}'
+                self.storage.store(data, str(JalaliDatetime.today()))
+            print(f'{len(pure)} data Decoded successfully at {str(JalaliDatetime.today())}')

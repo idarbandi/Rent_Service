@@ -56,12 +56,22 @@ class AdvParser:
         if time:
             return time.attrs['datetime']
 
+    @property
+    def image(self):
+        lister = list()
+        img_tag = self.soup.find_all('img')
+        if img_tag:
+            for img in img_tag:
+                lister.append(img.get('src'))
+            return lister
+
+
     def parser(self, html_data):
         self.soup = BeautifulSoup(html_data, 'html.parser')
         data = dict(
             title=self.title, price=self.price, area=self.area,
             allias=self.small_title, post_id=self.post_id,
-            created_time=self.created_time
+            created_time=self.created_time, images=self.image
         )
         return data
 

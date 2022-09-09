@@ -80,5 +80,5 @@ class DataCrawler(BaseCrawl):
             pure = link_generator(link[i])
             data = self.parser.parser(pure)
             if protocols['data-store']:
-                self.storage.store(data, str(JalaliDatetime.today()))
+                self.storage.store(data, 'Encoded.Data')
             print(f'{len(pure)} data Decoded successfully at {str(JalaliDatetime.today())}')

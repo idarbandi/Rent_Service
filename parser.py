@@ -46,7 +46,8 @@ class AdvParser:
         selector = 'body > section > section > section > div.postinginfos > p:nth-child(1)'
         id_tag = self.soup.select_one(selector)
         if id_tag:
-            return id_tag.text.replace('Id publi: ', '')
+            id_tag = id_tag.text.replace('Id publi: ', '')
+            return id_tag.replace('post id:', '')
         return None
 
     @property
@@ -58,13 +59,9 @@ class AdvParser:
 
     @property
     def image(self):
-        lister = list()
         img_tag = self.soup.find_all('img')
-        if img_tag:
-            for img in img_tag:
-                lister.append(img.get('src'))
-            return lister
-
+        images_sources = set([img.attrs['src'].replace('50x50c', '600x450') for img in img_tag])
+        return [{"url": src, 'flag': False} for src in images_sources]
 
     def parser(self, html_data):
         self.soup = BeautifulSoup(html_data, 'html.parser')

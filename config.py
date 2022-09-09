@@ -9,13 +9,14 @@ protocols = {
     'Link_Pick': True,
     'data-store': True,
     'storage_type': 'file',  # either can be (mongo) or (file)
-    'read_type': 'file',  # either can be (mongo) or (file)
+    'read_type': 'mongo',  # either can be (mongo) or (file)
+    'image_store': True
 
 }
 
 
-def link_generator(kir):
-    response = requests.get(kir, stream=True)
+def link_generator(lnk):
+    response = requests.get(lnk, stream=True)
     return response.text
 
 
